@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { dateFromId, descriptionFromMarkdown, formatDate, slugFromId, titleFromMarkdown } from '../../lib/content';
+
+const ideas = (await getCollection('ideas'))
+  .map((entry) => ({
+    entry,
+    title: titleFromMarkdown(entry.body ?? ''),
+    description: descriptionFromMarkdown(entry.body ?? ''),
+    date: dateFromId(entry.id),
+    slug: slugFromId(entry.id),
+  }))
+  .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
+---
+
+<BaseLayout
+  title="Ideas | Paula Carvajal"
+  description="Reflexiones sobre comunicación, contenidos, experiencia del cliente y construcción de marca."
+  eyebrow="Notas y aprendizajes"
+>
+  <section class="ideas-intro">
+    <h1>Ideas para comunicar, conectar y crecer.</h1>
+    <p>Apuntes prácticos desde la intersección entre las marcas, las personas y los objetivos de negocio.</p>
+  </section>
+  <section class="ideas-grid" aria-label="Artículos">
+    {ideas.map((idea, index) => (
+      <article class:list={['idea-card', index === 0 && 'idea-card-featured']}>
+        <p class="idea-meta">{formatDate(idea.date)}</p>
+        <h2><a href={`/ideas/${idea.slug}/`}>{idea.title}</a></h2>
+        <p>{idea.description}</p>
+        <a class="text-link" href={`/ideas/${idea.slug}/`}>Leer la nota <span aria-hidden="true">→</span></a>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

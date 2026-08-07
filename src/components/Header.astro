@@ -1,0 +1,37 @@
+---
+const currentPath = Astro.url.pathname;
+const navigation = [
+  { href: '/', label: 'Inicio' },
+  { href: '/servicios/', label: 'Servicios' },
+  { href: '/sobre-paula/', label: 'Sobre Paula' },
+  { href: '/trayectoria/', label: 'Trayectoria' },
+  { href: '/ideas/', label: 'Ideas' },
+];
+
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Paula Carvajal, inicio">
+    <span class="brand-mark" aria-hidden="true">PC</span>
+    <span class="brand-name">Paula Carvajal</span>
+  </a>
+
+  <nav class="desktop-nav" aria-label="Navegación principal">
+    {navigation.map((item) => (
+      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+    ))}
+    <a class="button button-small" href="/contacto/">Conversemos</a>
+  </nav>
+
+  <details class="mobile-menu">
+    <summary aria-label="Abrir menú">Menú</summary>
+    <nav aria-label="Navegación móvil">
+      {navigation.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+      ))}
+      <a href="/contacto/">Conversemos</a>
+    </nav>
+  </details>
+</header>

@@ -1,0 +1,28 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { dateFromId, descriptionFromMarkdown, formatDate, slugFromId, titleFromMarkdown } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const ideas = await getCollection('ideas');
+  return ideas.map((entry) => ({
+    params: { slug: slugFromId(entry.id) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const body = entry.body ?? '';
+const title = titleFromMarkdown(body);
+const description = descriptionFromMarkdown(body);
+const date = dateFromId(entry.id);
+---
+
+<BaseLayout title={`${title} | Paula Carvajal`} description={description} eyebrow="Ideas">
+  <article class="article-page">
+    <p class="article-date">{formatDate(date)}</p>
+    <div class="prose article-prose"><Content /></div>
+    <a class="text-link article-back" href="/ideas/"><span aria-hidden="true">←</span> Volver a Ideas</a>
+  </article>
+</BaseLayout>

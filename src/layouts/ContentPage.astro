@@ -1,0 +1,18 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  tone?: 'coral' | 'yellow' | 'mint';
+}
+
+const { title, description, eyebrow, tone = 'mint' } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Paula Carvajal`} description={description} eyebrow={eyebrow}>
+  <article class:list={['content-page', `content-page-${tone}`]}>
+    <div class="prose"><slot /></div>
+  </article>
+</BaseLayout>
